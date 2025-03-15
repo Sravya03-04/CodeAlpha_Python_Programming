@@ -1,0 +1,46 @@
+import os
+import shutil
+
+
+DOWNLOADS_FOLDER = os.path.expanduser("~/Downloads")
+
+
+CATEGORIES = {
+    "Documents": [".pdf", ".docx", ".txt", ".pptx", ".xlsx"],
+    "Images": [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".svg"],
+    "Videos": [".mp4", ".mkv", ".avi", ".mov"],
+    "Music": [".mp3", ".wav", ".aac"],
+    "Archives": [".zip", ".rar", ".tar", ".gz"],
+    "Executables": [".exe", ".sh", ".bat"],
+    "Code": [".py", ".java", ".cpp", ".js", ".html", ".css"],
+}
+
+def organize_downloads():
+    """Organizes files in the Downloads folder by category."""
+    if not os.path.exists(DOWNLOADS_FOLDER):
+        print("❌ Error: Downloads folder not found!")
+        return
+
+    
+    files = [f for f in os.listdir(DOWNLOADS_FOLDER) if os.path.isfile(os.path.join(DOWNLOADS_FOLDER, f))]
+
+    for file in files:
+        file_path = os.path.join(DOWNLOADS_FOLDER, file)
+        file_extension = os.path.splitext(file)[1].lower()
+
+        
+        category = next((cat for cat, exts in CATEGORIES.items() if file_extension in exts), "Others")
+
+        
+        category_folder = os.path.join(DOWNLOADS_FOLDER, category)
+        if not os.path.exists(category_folder):
+            os.makedirs(category_folder)
+
+        
+        shutil.move(file_path, os.path.join(category_folder, file))
+        print(f"✅ Moved: {file} --> {category}/")
+
+    print("🎉 Downloads folder organized successfully!")
+
+if __name__ == "__main__":
+    organize_downloads()
